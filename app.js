@@ -1,6 +1,6 @@
 //function to determine marker size based on magnitude
 function markerSize(mag) {
-    return mag * 4;
+    return mag * 6;
 }
 
 //function to get color
@@ -40,6 +40,8 @@ d3.json(queryUrl, function(data) {
         };
 
         function style(feature) {
+            console.log(feature.properties.mag);
+            console.log(getColor(feature.properties.mag))
             return{
                 fillColor: getColor(feature.properties.mag),
                 fillOpacity: 0.7,
@@ -62,7 +64,7 @@ d3.json(queryUrl, function(data) {
         var earthquakes = L.geoJSON(earthquakeData, {
             onEachFeature: onEachFeature,
             pointToLayer:pointToLayer,
-            syle: style
+            style: style
         });
 
         // Sending our earthquakes layer to the createMap function
@@ -105,6 +107,7 @@ function createMap(earthquakes) {
         Earthquakes: earthquakes
     };
 
+
     // Create our map, giving it the streetmap and earthquakes layers to display on load
     var myMap = L.map("map", {
         center: [
@@ -120,4 +123,24 @@ function createMap(earthquakes) {
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
-}
+
+    //adding a legend
+    var legend = L.control({
+        position: 'bottomright'
+    });
+    legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+            magnitudes = [0,1,2,3,4,5],
+            labels = [];
+        div.innerHTML += '<h4 style="margin:4px"> Magnitude </h4>'
+        //loop and generate color square
+        for (var i=0; i<magnitudes.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(magnitudes[i]) + '"></i>' +
+                magnitudes[i] + (magnitudes[i+1] ? '&ndash;' + magnitudes[i+1] +'<br>' : '+');
+        }
+
+        return div;
+    };
+    legend.addTo(myMap);
+};
