@@ -39,8 +39,6 @@ d3.json(queryUrl, function(data) {
         };
 
         function style(feature) {
-            console.log(feature.properties.mag);
-            console.log(getColor(feature.properties.mag))
             return{
                 fillColor: getColor(feature.properties.mag),
                 fillOpacity: 0.7,
@@ -135,7 +133,7 @@ function createMap(earthquakes) {
         //loop and generate color square
         for (var i=0; i<magnitudes.length; i++) {
             div.innerHTML +=
-                '<i style="background:' + getColor(magnitudes[i]) + '"></i>' +
+                '<i style="background:' + getColor(magnitudes[i] + 1) + '"></i>' +
                 magnitudes[i] + (magnitudes[i+1] ? '&ndash;' + magnitudes[i+1] +'<br>' : '+');
         }
 
